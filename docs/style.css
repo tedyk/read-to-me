@@ -11,14 +11,19 @@ body {
   width: 100%;
   height: 100%;
 }
+.options {
+  margin: 20px 0;
+}
 .buttons {
   display: flex;  
   align-items: flex-start;
-  column-gap: 40px;
 }
 .buttons div {
   font-family: 'FontAwesome';
   cursor: pointer;
   font-size: 30px;
   margin-top: 10px;
+}
+.buttons div:not(:last-child) {
+  margin-right: 40px;
 }

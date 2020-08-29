@@ -12,8 +12,28 @@ let activeVoice;
 function* getSpeechContent () {
   const content  = $('#input').val().trim().split('\n');
   for (let i = 0; i < content.length; i++) {
-    yield content[i];
+    yield {
+      text: content[i],
+      hasNext: i < content.length - 1
+    }
   }
+}
+
+
+const disablePlay = () => {
+  $( '#play' ).hide();
+  $( '#spin' ).show();
+}
+
+const enablePlay = () => {
+  $( '#play' ).show();
+  $( '#spin' ).hide();
+}
+
+const initButtons = () => {
+  $( '#play' ).show();
+  $( '#spin' ).hide();
+  $( '#reset' ).hide();
 }
 
 const speak = (text) => {
@@ -24,8 +44,17 @@ const speak = (text) => {
     if (!text || text === '') reject('No text supplied to speak');
 
     const utterThis = new SpeechSynthesisUtterance(text);
-    utterThis.onend = () => resolve();
-    utterThis.onerror = () => reject();
+    utterThis.onstart = () => {
+      disablePlay();
+    };
+    utterThis.onend = () => {
+      enablePlay();
+      resolve();
+    };
+    utterThis.onerror = () => {
+      enablePlay();
+      reject();
+    };
     utterThis.voice = activeVoice;
     utterThis.pitch = 1;
     utterThis.rate = 1;
@@ -39,7 +68,13 @@ const play = () => {
   }
   const content = speechContent.next();
   if(!content.done) {
-    speak(content.value);
+    speak(content.value.text).then(() => {
+      if(!content.value.hasNext) {
+        $( '#reset' ).show();
+        $( '#play' ).hide();
+        $( '#spin' ).hide();
+      }  
+    });
   }
 }
 
@@ -62,10 +97,20 @@ $( document ).ready(function() {
     activeVoice = availableVoices[voiceIndex];
     localStorage.setItem(KEYS.VOICE, voiceIndex);
   });
+
+  initButtons();
 });
 
+// Handler for the "Play" button
 $( '#play' ).click(() => play() );
 
+// Handler for the "Reset" button
+$( '#reset' ).click(() => {
+  speechContent = getSpeechContent();
+  initButtons();
+ });
+
+ // Handler for the "Save" button
 $( '#save' ).click(() => {
   localStorage.setItem(KEYS.CONTENT, $('#input').val());
 });
