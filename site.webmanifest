@@ -1,0 +1,24 @@
+{
+  "name": "Read to me!",
+  "short_name": "Read to me!",
+  "icons": [
+    {
+      "src": "/assets/icons/android-icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/apple-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/ms-icon-310x310.png",
+      "sizes": "310x310",
+      "type": "image/png"
+    }  
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
